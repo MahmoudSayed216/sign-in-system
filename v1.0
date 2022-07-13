@@ -1,0 +1,662 @@
+#include<iostream>
+using namespace std;
+
+class User {
+private:
+	string name;
+	string email;
+	int pin = 0;
+
+public:
+
+	User(string n = "", string e="", int p = 0)
+	{
+		name = n;
+		email = e;
+		pin = p;
+	}
+
+	void setName(string n) {
+		name = n;
+	}
+
+	void setEmail(string e) {
+		email = e;
+	}
+
+	void setPin(int p) {
+		pin = p;
+	}
+
+	string getName() {
+		return name;
+	}
+
+	string getEmail() {
+		return email;
+	}
+
+	int getPin() {
+		return pin;
+	}
+};
+
+class Admin {
+	private:
+		User user;
+		int adminstration_key;
+	public:
+		Admin(string n = "", string e = "", int p = 0, int adk = 0)
+		{
+			user = User(n, e, p);
+			adminstration_key = adk;
+		}
+
+		string getAdminName()
+		{
+			return user.getName();
+		}
+		string getAdminEmail()
+		{
+			return user.getEmail();
+		}
+		int getAdminPin()
+		{
+			return user.getPin();
+		}
+		void setAdminName(string n)
+		{
+			user.setName(n);
+		}
+		void setAdminEmail(string e)
+		{
+			user.setEmail(e);
+		}
+		void setAdminPIN(int P)
+		{
+			user.setPin(P);
+		}
+
+
+};
+
+class Ticket {
+	private:
+		int ticketNumber;
+		string ticketTitle;
+		string text;
+		bool ticketStatus = false; // unseen
+	public:
+		Ticket(string title, string txt)
+		{
+			ticketTitle = title;
+			text = txt;
+		}
+		void setTicketText(string tt)
+		{
+			text = tt;
+		}
+		void setTitle(string title)
+		{
+			ticketTitle = title;
+		}
+		void setTicketNumber(int tn)
+		{
+			ticketNumber = tn;
+		}
+		void isSeen()
+		{
+			ticketStatus = true;
+		}
+
+		string getTitle()
+		{
+			return ticketTitle;
+		}
+		string getText()
+		{
+			return text;
+		}
+		int getTicketNumber()
+		{
+			return ticketNumber;
+		}
+		bool getTicketStatus()
+		{
+			return ticketStatus;
+		}
+};
+
+const int maximumUsers = 10;
+const int maximumAdmins = 3;
+int number_of_existing_users = 0;
+int number_of_existing_admins = 0;
+int total_tickets = 0;
+int currently_existing_tickets = 0;
+
+User users[maximumUsers];
+Admin Admins[maximumAdmins];
+Ticket Tickets
+
+// functions declaration
+
+void addUser(string name, string email, int PIN);
+void takeSIinfo(int option);
+void printUsers();
+void printAdmins();
+void mainMenu();
+void user_sign_in();
+bool checkIfUserExists(string n, string e, int p);
+bool checkIfAdminExists(string n, string e, int p);
+void signUp();
+void change_acc_data();
+void remove_acc();
+bool checkIfSimilarU (string e);
+bool checkIfSimilarA(string e);
+void change_name(string n, string e);
+void change_email(string n, string e);
+void change_PIN(string n, string e);
+int locateUser(string n);
+int locateAdmin(string n);
+bool check_if_admin_or_user(string n);
+void users_interface(string e);
+void admins_interface(string e);
+
+
+
+
+
+// end of functions declaration
+
+
+int main()
+{
+
+	mainMenu();
+
+	return 0;
+}
+
+
+void addUser(string name, string email, int PIN)
+{
+	users[number_of_existing_users++] = User(name, email, PIN);
+}
+
+void addAdmin(string name, string email, int PIN)
+{
+	Admins[number_of_existing_admins++] = Admin(name, email, PIN);
+}
+
+void addTicket(string title, string text, int tNumber, bool status)
+{
+	
+}
+
+void takeSIinfo(int option)
+{
+	system("CLS");
+	string name, email;
+	int pin;
+	int option2;
+m:
+	cout << "1- Enter your data \n2- Return to main menu" << endl << endl;	cin >> option2;
+	if (option2 == 2)
+		mainMenu();
+	else if (option2 == 1)
+	{
+		cout << "Please enter your name: "; cin >> name;
+		cout << "Please enter your email: "; cin >> email;
+		cout << "Please enter your pin number: "; cin >> pin;
+		cout << endl;
+		if (option == 1)
+		{
+			if (checkIfUserExists(name, email, pin))
+			{
+				system("CLS");
+				cout << "Access Granted" << endl << endl << "Welcome " << name << endl << endl;
+				system("PAUSE");
+				users_interface(email);
+			}
+
+			else
+			{
+				system("CLS");
+				cout << "There're no users with the given data, please check your entries and try again: " << endl; goto m;
+			}
+		}
+
+		else if (option == 2)
+		{
+			if (checkIfAdminExists(name, email, pin))
+			{
+				system("CLS");
+				cout << "Access Granted" << endl << endl << "Welcome " << name << endl << endl;
+				system("Pause");
+				admins_interface(email);
+			}
+
+			else
+			{
+				system("CLS");
+				cout << "There're no users with the given data, please check your entries and try again: " << endl; goto m;
+			}
+
+
+		}
+	}
+	
+
+}
+
+void printUsers()
+{
+	cout << endl;
+	cout << "________________________________________________________________" << endl << endl;
+	cout << "$ List of Users $" << endl << endl;
+
+	for (int i = 0; i < number_of_existing_users; i++)
+	{
+		cout << "User #" << i + 1 << endl << "Name: " << users[i].getName() << endl << "Email:" << users[i].getEmail() << endl << "PIN: " << users[i].getPin() << endl;
+	}
+	cout << "________________________________________________________________" << endl;
+	cout << endl;
+}
+void  printAdmins()
+{
+	cout << "$ List of Admins $" << endl << endl;
+	for (int i = 0; i < number_of_existing_admins; i++)
+	{
+		cout << "Admin #" << i + 1 << endl << "Name: " << Admins[i].getAdminName() << endl << "Email: " << Admins[i].getAdminEmail() << endl << "PIN: " << Admins[i].getAdminPin() << endl;
+	}
+	cout << "________________________________________________________________" << endl;
+	cout << endl;
+}
+
+void mainMenu()
+{
+	system("CLS");
+	f:
+	int option;
+	cout << "Welcome to the technical support system.\nPlease Choose one of the following options: " << endl<<endl;
+	cout << "1- Sign in as user\n" << "2- Sign in as an adminstrator\n" << "3- Change account data\n"  << "4- Remove account\n" <<"5- Sign Up\n" << "6- Exit\n";
+	cout << endl << "--> "; cin >> option;
+
+	switch (option)
+	{
+	case 1:
+	{
+		takeSIinfo(option);
+		break;
+	}
+	case 2:
+	{
+		takeSIinfo(option);
+		break;
+	}
+	case 3:
+	{
+		change_acc_data();
+		break;
+	}
+	case 4:
+	{
+		remove_acc();
+		break;
+	}
+	case 5:
+	{
+		signUp();
+		break;
+	}
+	case 6:
+	{
+		exit(1);
+	}
+	case 200216: 
+	{
+		system("cls"); printUsers(); printAdmins(); system("PAUSE"); mainMenu(); break;
+	}
+	default: 
+	{
+		cout << "Please enter a valid input..." << endl; goto f; }
+	}
+
+}
+
+void signUp() {
+	system("cls");
+	string name;
+	string email;
+	int pin;
+	int adkey;
+	int option;
+	cout << "sign in as: \n" << "1- User\n2- Admin\n3-Go Back" << endl;
+	cout << "-->";
+	cin >> option;
+	if (option == 3)
+		mainMenu();
+	j:
+	cout << "Enter your name: "; cin >> name;
+	if (name.length() < 6 || name.length() > 15)
+	{
+		cout << "Your Username length must be between 6 - 15 letterse." << endl;
+		goto j;
+	}
+		
+	cout << "Enter your email: "; cin >> email;
+	cout << "Enter your pin: "; cin >> pin;
+	
+	if (checkIfSimilarU(email) || checkIfSimilarA(email))
+	{
+		cout << "Another user has either the same email, please enter another one: " << endl <<endl;
+		goto j;
+	}
+
+
+	if (option == 1 && number_of_existing_users != 10 )
+	{
+		addUser(name, email, pin);
+		cout << "Your account has been registered successfully." << endl;
+		system("Pause");
+		mainMenu();
+	}
+	else if (option == 2 && number_of_existing_admins != 3)
+	{
+		cout << "Enter the adminstration key: ";
+	m: cin >> adkey;
+		if (adkey == 200216)
+		{
+			addAdmin(name, email, pin);
+			cout << "Your accound has been registered successfully." << endl;
+			system("PAUSE");
+			mainMenu();
+
+		}
+		else
+		{
+			cout << "Please check your Adminstration key: "; goto m;
+		}
+	}
+	else
+	{
+		cout << "Sorry, number of users limit exceeded";
+		system("pause");
+		mainMenu();
+	}
+		
+}
+
+bool checkIfUserExists(string n, string e, int p)
+{
+	bool exists = false;
+	for (int i = 0; i < number_of_existing_users; i++)
+	{
+		if (n == users[i].getName() && e == users[i].getEmail() && p == users[i].getPin())
+			exists = true;
+	}
+
+	return exists;
+}
+
+bool checkIfAdminExists(string n, string e, int p)
+{
+	bool exists = false;
+	for (int i = 0; i < number_of_existing_admins; i++)
+	{
+		if(Admins[i].getAdminName() == n && Admins[i].getAdminEmail() == e && Admins[i].getAdminPin() == p)
+			exists = true;
+	}
+
+	return exists;
+}
+
+bool checkIfSimilarU( string e)
+{
+	bool exists = false;
+	for (int i = 0; i < number_of_existing_users; i++)
+	{
+		if (e == users[i].getEmail())
+			exists = true;
+	}
+
+	return exists;
+}
+bool checkIfSimilarA( string e)
+{
+	bool exists = false;
+	for (int i = 0; i < number_of_existing_admins; i++)
+	{
+		if (e == Admins[i].getAdminEmail())
+			exists = true;
+	}
+
+	return exists;
+}
+void change_acc_data()
+{
+	system("cls");
+	string n, e;
+	int PIN;
+	n:
+	cout << "User Name: ";	   cin >> n;
+	cout << "Email Address: "; cin >> e;
+	cout << "PIN: ";		   cin >> PIN;
+	if (checkIfAdminExists(n, e, PIN) || checkIfUserExists(n, e, PIN))
+	{
+	 m:
+		cout << "1- Change Name" << endl;
+		cout << "2- Change Email" << endl;
+		cout << "3- Change PIN" << endl;
+		cout << "4- Change All" << endl;
+		int option;
+		cout << endl << "-->";	cin >> option;
+
+		switch (option) {
+		case 1: {change_name(n, e); break; }
+		case 2: {change_email(n, e); break; }
+		case 3: {change_PIN(n, e); break; }
+		case 4: {change_name(n, e);  change_PIN(n, e); change_email(n, e); break; }
+		default: {cout << "Please enter a valid input." << endl; goto m; }
+		}
+	}
+	else
+	{
+		cout << "Please check your entries... " << endl;
+		goto n;
+	}
+	mainMenu();
+	}
+	
+
+void change_name(string n, string e)
+{
+	cout <<endl<< "------------------------------------------------" << endl;
+	bool AU = check_if_admin_or_user(e);	// true --> admin, false --> user
+	string N;
+	cout << "Please enter your new name: ";
+	cin >> N;
+
+	if (AU)
+	{
+		Admins[locateAdmin(e)].setAdminName(N);
+	}
+	else if (!AU )
+	{		
+		users[locateUser(e)].setName(N);
+	}
+
+}
+
+void change_email(string n, string e)
+{
+	cout << endl <<"------------------------------------------------" << endl;
+	bool AU = check_if_admin_or_user(e);	// true --> admin, false --> user
+	string E;
+	k:
+	cout << "Please enter your new Email: ";  cin >> E;
+	if (locateAdmin(E) != -1 || locateUser(E)!=-1)
+	{
+		cout << "This email is already in use" << endl;
+		goto k;
+	}
+		
+
+	if (AU)
+	{
+		Admins[locateAdmin(e)].setAdminEmail(E);
+	}
+	else if (!AU)
+	{
+		users[locateUser(e)].setEmail(E);
+	}
+
+}
+void change_PIN(string n, string e)
+{
+	cout << endl << "------------------------------------------------" << endl;
+	bool AU = check_if_admin_or_user(e);	// true --> admin, false --> user
+	int PIN;
+k:
+	cout << "Please enter your new PIN code: ";  cin >> PIN;
+	
+
+
+	if (AU)
+	{
+		Admins[locateAdmin(e)].setAdminPIN(PIN);
+	}
+	else if (!AU)
+	{
+		users[locateUser(e)].setPin(PIN);
+	}
+
+
+}
+
+int locateUser(string e)
+{
+	int index = -1;
+
+	for (int i = 0; i < number_of_existing_users; i++)
+	{
+		if (e == users[i].getEmail())
+		{
+			index = i;
+			break;
+		}
+
+		
+	}
+
+	return index;
+}
+int locateAdmin(string e)
+{
+	int index = -1;
+
+	for (int i = 0; i < number_of_existing_admins; i++)
+	{
+		if (e == Admins[i].getAdminEmail())
+		{
+			index = i;
+			break;
+		}
+
+
+	}
+
+	return index;
+}
+
+bool check_if_admin_or_user(string e)
+{
+	bool isAdmin = false;
+	for (int i = 0; i < number_of_existing_admins; i++)
+	{
+		if (Admins[i].getAdminEmail() == e)
+		{
+			isAdmin = true;
+			break;
+		}
+	}
+	return isAdmin;
+}
+void remove_acc()
+{
+	system("cls");
+	j:
+	string n, e;
+	int p;
+	cout << "User Name: "; cin >> n;
+	cout << "Email: "; cin >> e;
+	cout << "PIN: ";   cin >> p;
+	bool exists = checkIfAdminExists(n,e,p) || checkIfUserExists(n,e,p);
+
+	if (!exists)
+	{
+		cout << "There are no users with the gives entries.." << endl;
+		goto j;
+	}
+
+
+	bool AU = check_if_admin_or_user(e);
+
+	if (AU)
+	{
+
+		for (int i = locateAdmin(e); i < number_of_existing_admins; i++)
+		{
+			Admins[i] = Admins[i + 1];
+		}
+
+		Admins[--number_of_existing_admins] = {};
+	}
+	else
+	{
+		for (int i = locateUser(e); i < number_of_existing_users; i++)
+		{
+			users[i] = users[i + 1];
+		}
+
+		users[--number_of_existing_users] = {};
+	}
+
+	cout << "Account Removed Successfully" << endl;
+	system("PAUSE");
+
+	mainMenu();
+
+}
+
+void users_interface(string e)
+{
+	int option;
+	j:
+	cout << "1- Submit a ticket" << endl;
+	cout << "2- My tickets" << endl;
+	cout << "3- Report an adminstrator" << endl;
+	cout << "4- Sign out" << endl;
+	cout << "--> "; cin >> option;
+	switch (option) {
+	//case 1: { submit_ticket(e); break; }
+	//case 2: { show_tickets(e); break; }
+	//case 3: { report(e); break; }
+	case 4: { 
+		cout << "Are you sure you want to sign out ? (y/n) ";
+		char option;
+		cin >> option;
+		(option == 'y' || option == 'Y') ? mainMenu() : users_interface(e);
+	}
+	default: {cout << "Please enter a valid option: " << endl << endl; goto j; }
+	}
+
+
+}
+
+
+
+void admins_interface(string e)
+{
+
+}
